@@ -30,6 +30,9 @@ if __name__ == '__main__':
     player = []
     player_length = 10
     player_width = []
+    color1 = (254, 0, 0)
+    color2 = (255, 0 ,0)
+    player_color = []
 
     #food
     food = Food()
@@ -37,39 +40,54 @@ if __name__ == '__main__':
         if len(player) > player_length-1:
             player.pop()
         player.insert(0, (x, y))
-        if len(player) <= player_length-1:
+
+        if len(player_color) <= 10: #you can't lose if you collide with first 10 lines
+            player_color.insert(-1, color1)
+        else:
+            player_color.insert(-1, color2)
+
+        if len(player) <= player_length-1: #makes the snake wider in the center
             player_width.insert(int(len(player_width)/2), int(len(player)/(player_length/5)+1))
-        #print(player)
 
     #game loop
     loop = True
-    #count = 0
+    alive = True
+    groath_rate = 3
+    count = 0
     while loop:
         window.fill((0, 0, 0))
-        #count += 1
+        count += 1
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 loop = False
-            if event.type == pygame.MOUSEMOTION:
+            if event.type == pygame.MOUSEMOTION and alive:
                 x, y = event.pos
-        if x-food.x >=0 and y-food.y >=0 and x-food.x <=10 and y-food.y <=10:
-            print('{0}, {1}, {2}, {3}'.format(x, y, food.x, food.y))
-            food.eaten()
-            player_length += 3
+                if x-food.x >=0 and y-food.y >=0 and x-food.x <=10 and y-food.y <=10:
+                    print('{0}, {1}, {2}, {3}'.format(x, y, food.x, food.y))
+                    food.eaten()
+                    player_length += groath_rate
+
         food.draw()
-                #print("{0} {1}".format(x, y))
-        #if count == 4:
-            #count = 0
         try:
-            move_player(x, y)
+            if count == 4 and alive:
+                count = 0
+                move_player(x, y)
+
             coordinates_prev = (x, y)
-            for coordinates, width in zip(player, player_width):
-                pygame.draw.line(window, (255, 0, 0), coordinates_prev, coordinates, width)
+            head = True
+            for coordinates, width, color in zip(player, player_width, player_color):
+                pygame.draw.line(window, color, coordinates_prev, coordinates, width)
                 coordinates_prev = coordinates
+
+            if window.get_at((x, y))[:3] == color2:
+                alive = False
+
         except Exception:
             pass
+
         clock.tick(60)
+
         #print(clock.get_fps())
-        #print(player_length)
         pygame.display.update()
 
