@@ -1,4 +1,4 @@
-#!/usr/bin/python3.9
+#!/usr/bin/python
 
 import pygame
 import random
@@ -15,7 +15,7 @@ class Food:
     def draw(self):
         pygame.draw.rect(window, self.color, pygame.Rect(self.x, self.y, self.size, self.size))
 
-if __name__ == '__main__':
+def main():
 
     #initialize pygame
     pygame.init()
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
         food.draw()
         try:
-            if count == 4 and alive:
+            if count == 6 and alive:
                 count = 0
                 move_player(x, y)
 
@@ -91,3 +91,6 @@ if __name__ == '__main__':
         #print(clock.get_fps())
         pygame.display.update()
 
+
+if __name__ == '__main__':
+    main()
